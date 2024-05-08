@@ -21,37 +21,57 @@ export class Bookcontroller {
 
   @httpPost("/createbook", user.verifyAdminToken)
   async createbook(req: Request, res: Response) {
-    const data: BookrInter = req.body;
-    const authordata = await bookService.createbook(data);
+    try {
+      const data: BookrInter = req.body;
+      const authordata = await bookService.createbook(data);
 
-    res.json(authordata);
+      res.json(authordata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
 
   @httpGet("/getbook", user.verifyAdminToken)
   async getcategory(req: Request, res: Response) {
-    const pageno = req.query.pageno;
-    const categorydata = await bookService.getbooks(pageno);
-    res.status(200).json(categorydata);
+    try {
+      const pageno = req.query.pageno;
+      const categorydata = await bookService.getbooks(pageno);
+      res.status(200).json(categorydata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
 
   @httpPut("/updatebook/:id", user.verifyAdminToken)
   async updatecategory(req: Request, res: Response) {
-    const id = req.params.id;
-    const data = req.body;
-    const categorydata = await bookService.updatebook(id, data);
-    res.status(200).json(categorydata);
+    try {
+      const id = req.params.id;
+      const data = req.body;
+      const categorydata = await bookService.updatebook(id, data);
+      res.status(200).json(categorydata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
 
   @httpDelete("/deletebook/:id", user.verifyAdminToken)
   async deletebook(req: Request, res: Response) {
-    const id = req.params.id;
-    const categorydata = await bookService.deletebook(id);
-    res.status(200).json(categorydata);
+    try {
+      const id = req.params.id;
+      const categorydata = await bookService.deletebook(id);
+      res.status(200).json(categorydata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
   @httpGet("/searchbook", user.verifyAdminToken)
   async searchbook(req: Request, res: Response) {
-    const search = req.query.search;
-    const categorydata = await bookService.searchbook(search);
-    res.status(200).json(categorydata);
+    try {
+      const search = req.query.search;
+      const categorydata = await bookService.searchbook(search);
+      res.status(200).json(categorydata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
 }
