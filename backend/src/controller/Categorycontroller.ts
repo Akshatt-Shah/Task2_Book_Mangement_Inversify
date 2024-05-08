@@ -21,27 +21,43 @@ export class CategoryController {
   ) {}
   @httpPost("/createcategory", user.verifyAdminToken)
   async createcategory(req: Request, res: Response) {
-    const data = req.body;
-    const categorydata = await category.createcategory(data);
-    res.status(200).json(categorydata);
+    try {
+      const data = req.body;
+      const categorydata = await category.createcategory(data);
+      res.status(200).json(categorydata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
   @httpGet("/getcategory", user.verifyAdminToken)
   async getcategory(req: Request, res: Response) {
-    const pageno = req.query.pageno;
-    const categorydata = await category.getcategory(pageno);
-    res.status(200).json(categorydata);
+    try {
+      const pageno = req.query.pageno;
+      const categorydata = await category.getcategory(pageno);
+      res.status(200).json(categorydata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
   @httpPut("/updatecategory/:id", user.verifyAdminToken)
   async updatecategory(req: Request, res: Response) {
-    const id = req.params.id;
-    const data = req.body;
-    const categorydata = await category.updatecategory(id, data);
-    res.status(200).json(categorydata);
+    try {
+      const id = req.params.id;
+      const data = req.body;
+      const categorydata = await category.updatecategory(id, data);
+      res.status(200).json(categorydata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
   @httpDelete("/deletecategory/:id", user.verifyAdminToken)
   async deletecategory(req: Request, res: Response) {
-    const id = req.params.id;
-    const categorydata = await category.deletecategory(id);
-    res.status(200).json(categorydata);
+    try {
+      const id = req.params.id;
+      const categorydata = await category.deletecategory(id);
+      res.status(200).json(categorydata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
 }

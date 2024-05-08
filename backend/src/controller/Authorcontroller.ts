@@ -21,28 +21,44 @@ export class Authorcontroller {
 
   @httpPost("/createauthor", user.verifyAdminToken)
   async createauthors(req: Request, res: Response) {
-    const data: AuthorInter = req.body;
-    const authordata = await authorservice.createauthor(data);
+    try {
+      const data: AuthorInter = req.body;
+      const authordata = await authorservice.createauthor(data);
 
-    res.json(data);
+      res.json(data);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
   @httpGet("/getauthor", user.verifyAdminToken)
   async getauthors(req: Request, res: Response) {
-    const data: any = req.query.pageno;
-    const authordata = await authorservice.getauthor(data);
-    res.json(authordata);
+    try {
+      const data: any = req.query.pageno;
+      const authordata = await authorservice.getauthor(data);
+      res.json(authordata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
   @httpPut("/updateauthor/:id", user.verifyAdminToken)
   async updateauthors(req: Request, res: Response) {
-    const id: any = req.params.id;
-    const data: AuthorInter = req.body;
-    const authordata = await authorservice.updateauthor(id, data);
-    res.json(authordata);
+    try {
+      const id: any = req.params.id;
+      const data: AuthorInter = req.body;
+      const authordata = await authorservice.updateauthor(id, data);
+      res.json(authordata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
   @httpDelete("/deleteauthor/:id", user.verifyAdminToken)
   async deleteauthors(req: Request, res: Response) {
-    const id: any = req.params.id;
-    const authordata = await authorservice.deleteauthor(id);
-    res.json(authordata);
+    try {
+      const id: any = req.params.id;
+      const authordata = await authorservice.deleteauthor(id);
+      res.json(authordata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
   }
 }
