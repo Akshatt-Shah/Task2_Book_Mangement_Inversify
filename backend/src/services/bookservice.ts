@@ -2,6 +2,8 @@ import Bookdetail, { BookrInterface } from "../models/books";
 import { BookrInter } from "../interfaces/bookinterface";
 import { BookError, BookrSuccess } from "../error/customeerror";
 import { injectable } from "inversify";
+import Books from "../models/bookescategory";
+import Author from "../models/author";
 
 @injectable()
 export class BookService {
@@ -39,17 +41,144 @@ export class BookService {
       return { message: BookError.deleteBookError, status: false };
     }
   }
-  async searchbook(search: any): Promise<any> {
+  async searchbook(search?: any, pageno: any = 1): Promise<any> {
     try {
-      const regex = new RegExp(search, "i"); // 'i' makes the search case-insensitive
-      const books = await Bookdetail.find({
-        $or: [{ title: regex }, { description: regex }],
-      });
+      const limit = 5;
+      if (!pageno && pageno === 0) {
+        pageno = 1;
+      }
+      let skip = (pageno - 1) * limit;
+      if (skip === 0) {
+        skip = 1;
+      }
 
-      return books;
+      const regex = new RegExp(search, "i"); // 'i' makes the search case-insensitive
+      const data = await Bookdetail.aggregate([
+        {
+          $skip: skip - 1,
+        },
+        {
+          $limit: limit,
+        },
+        {
+          $sort: {
+            price: 1,
+          },
+        },
+        {
+          $lookup: {
+            from: "books",
+            localField: "category",
+            foreignField: "_id", // Assuming the "_id" field in the "Books" collection is used as the unique identifier
+            as: "categoryInfo",
+          },
+        },
+        {
+          $lookup: {
+            from: "authors",
+            localField: "author",
+            foreignField: "_id", // Assuming the "_id" field in the "Author" collection is used as the unique identifier
+            as: "authorInfo",
+          },
+        },
+        {
+          $match: {
+            $or: [
+              { title: regex },
+              { description: regex },
+              { "authorInfo.name": regex },
+              { "categoryInfo.name": regex },
+            ],
+          },
+        },
+        {
+          $project: {
+            title: 1,
+            description: 1,
+            category: { $arrayElemAt: ["$categoryInfo.name", 0] },
+            author: { $arrayElemAt: ["$authorInfo.name", 0] },
+            price: 1,
+          },
+        },
+      ]);
+
+      // console.log(data.categoryInfo);
+      return data;
     } catch (error) {
       console.error(BookError.SearchError, error);
       throw error;
     }
+    // try {
+    //   const regex = new RegExp(search, "i"); // 'i' makes the search case-insensitive
+    //   const books = await Bookdetail.find({
+    //     $or: [{ title: regex }, { description: regex }],
+    //   });
+
+    //   return books;
+    // } catch (error) {
+    //   console.error(BookError.SearchError, error);
+    //   throw error;
+    // }
+  }
+  async dynamicsearchbook(search: any): Promise<any> {
+    try {
+      const regex = new RegExp(search, "i"); // 'i' makes the search case-insensitive
+      const data = await Bookdetail.aggregate([
+        {
+          $lookup: {
+            from: "books",
+            localField: "category",
+            foreignField: "_id", // Assuming the "_id" field in the "Books" collection is used as the unique identifier
+            as: "categoryInfo",
+          },
+        },
+        {
+          $lookup: {
+            from: "authors",
+            localField: "author",
+            foreignField: "_id", // Assuming the "_id" field in the "Author" collection is used as the unique identifier
+            as: "authorInfo",
+          },
+        },
+        {
+          $match: {
+            $or: [
+              "title",
+              "description",
+              "categoryInfo.name",
+              "authorInfo.name",
+            ].map((ele) => {
+              return { [ele]: { $regex: search, $options: "i" } };
+            }),
+          },
+        },
+        {
+          $project: {
+            title: 1,
+            description: 1,
+            category: { $arrayElemAt: ["$categoryInfo.name", 0] },
+            author: { $arrayElemAt: ["$authorInfo.name", 0] },
+            price: 1,
+          },
+        },
+      ]);
+
+      // console.log(data.categoryInfo);
+      return data;
+    } catch (error) {
+      console.error(BookError.SearchError, error);
+      throw error;
+    }
+    // try {
+    //   const regex = new RegExp(search, "i"); // 'i' makes the search case-insensitive
+    //   const books = await Bookdetail.find({
+    //     $or: [{ title: regex }, { description: regex }],
+    //   });
+
+    //   return books;
+    // } catch (error) {
+    //   console.error(BookError.SearchError, error);
+    //   throw error;
+    // }
   }
 }
