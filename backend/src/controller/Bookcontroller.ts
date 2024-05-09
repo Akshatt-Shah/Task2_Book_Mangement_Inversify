@@ -67,8 +67,21 @@ export class Bookcontroller {
   @httpGet("/searchbook", user.verifyAdminToken)
   async searchbook(req: Request, res: Response) {
     try {
+      let { search, pageno }: any = req.query;
+      if (!pageno && pageno === null) {
+        pageno = 1;
+      }
+      const categorydata = await bookService.searchbook(search, pageno);
+      res.status(200).json(categorydata);
+    } catch (error: any) {
+      res.json(error.message);
+    }
+  }
+  @httpGet("/dynamicsearchbook", user.verifyAdminToken)
+  async dynamicsearchbook(req: Request, res: Response) {
+    try {
       const search = req.query.search;
-      const categorydata = await bookService.searchbook(search);
+      const categorydata = await bookService.dynamicsearchbook(search);
       res.status(200).json(categorydata);
     } catch (error: any) {
       res.json(error.message);

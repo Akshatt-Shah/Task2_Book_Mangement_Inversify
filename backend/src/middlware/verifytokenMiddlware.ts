@@ -9,7 +9,7 @@ export class AdminToken {
     try {
       // const tokennn = req.headers.authorization;
       const tokennn = req.cookies.AdminToken;
-      console.log(tokennn);
+      // console.log(tokennn);
       if (!tokennn) {
         return res.json({
           error: LoginError.loginError,
@@ -22,14 +22,14 @@ export class AdminToken {
         "your-secret-key",
         async (err: any, decoded: any) => {
           if (err) {
-            console.error("JWT verification error:", err.message);
+            // console.error("JWT verification error:", err.message);
             return res.json({
               error: "Unauthorized: Invalid token",
               status: false,
             });
           } else {
             const data: any = await user.findById(decoded.AdminToken);
-            console.log(data);
+            // console.log(data);
             if (data.type === "admin") {
               next();
             } else {
