@@ -22,6 +22,7 @@ export class CategoryController {
   @httpPost("/createcategory", user.verifyAdminToken)
   async createcategory(req: Request, res: Response) {
     try {
+      res.set("Content-Type", "application/json");
       const data = req.body;
       const categorydata = await category.createcategory(data);
       res.status(200).json(categorydata);
@@ -32,6 +33,7 @@ export class CategoryController {
   @httpGet("/getcategory", user.verifyAdminToken)
   async getcategory(req: Request, res: Response) {
     try {
+      res.set("Content-Type", "application/json");
       const pageno = req.query.pageno;
       const categorydata = await category.getcategory(pageno);
       res.status(200).json(categorydata);
@@ -42,6 +44,7 @@ export class CategoryController {
   @httpPut("/updatecategory/:id", user.verifyAdminToken)
   async updatecategory(req: Request, res: Response) {
     try {
+      res.set("Content-Type", "application/json");
       const id = req.params.id;
       const data = req.body;
       const categorydata = await category.updatecategory(id, data);
@@ -53,6 +56,7 @@ export class CategoryController {
   @httpDelete("/deletecategory/:id", user.verifyAdminToken)
   async deletecategory(req: Request, res: Response) {
     try {
+      res.set("Content-Type", "application/json");
       const id = req.params.id;
       const categorydata = await category.deletecategory(id);
       res.status(200).json(categorydata);
