@@ -13,6 +13,7 @@ import { AdminToken } from "../middlware/verifytokenMiddlware";
 import Bookdetail, { BookrInterface } from "../models/books";
 import { BookrInter } from "../interfaces/bookinterface";
 import { BookService } from "../services/bookservice";
+import { CustomeStatus } from "../error/customestatuscode";
 const user = new AdminToken();
 const bookService = new BookService();
 
@@ -27,9 +28,9 @@ export class Bookcontroller {
       const data: BookrInter = req.body;
       const authordata = await bookService.createbook(data);
 
-      res.json(authordata);
+      res.status(CustomeStatus.success).json(authordata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
 
@@ -41,7 +42,7 @@ export class Bookcontroller {
       const categorydata = await bookService.getbooks(pageno);
       res.status(200).json(categorydata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
 
@@ -52,9 +53,9 @@ export class Bookcontroller {
       const id = req.params.id;
       const data = req.body;
       const categorydata = await bookService.updatebook(id, data);
-      res.status(200).json(categorydata);
+      res.status(CustomeStatus.success).status(200).json(categorydata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
 
@@ -64,9 +65,9 @@ export class Bookcontroller {
       res.set("Content-Type", "application/json");
       const id = req.params.id;
       const categorydata = await bookService.deletebook(id);
-      res.status(200).json(categorydata);
+      res.status(CustomeStatus.success).status(200).json(categorydata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
   @httpGet("/searchbook", user.verifyAdminToken)
@@ -86,9 +87,9 @@ export class Bookcontroller {
         minprice,
         maxprice
       );
-      res.status(200).json(categorydata);
+      res.status(CustomeStatus.success).status(200).json(categorydata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
   @httpGet("/dynamicsearchbook", user.verifyAdminToken)
@@ -97,9 +98,9 @@ export class Bookcontroller {
       res.set("Content-Type", "application/json");
       const search = req.query.search;
       const categorydata = await bookService.dynamicsearchbook(search);
-      res.status(200).json(categorydata);
+      res.status(CustomeStatus.success).status(200).json(categorydata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
 }

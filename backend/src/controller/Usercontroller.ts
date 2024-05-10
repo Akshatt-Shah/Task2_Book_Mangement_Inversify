@@ -15,6 +15,7 @@ import { UserServices } from "../services/UserServices";
 import { UserInter } from "../interfaces/userinterface";
 import { AdminToken } from "../middlware/verifytokenMiddlware";
 import { LoginError, LoginSuccess } from "../error/customeerror";
+import { CustomeStatus } from "../error/customestatuscode";
 const verifytoken = new AdminToken();
 const user = new UserServices();
 @controller("/users")
@@ -23,12 +24,18 @@ export class Usercontroller {
 
   @httpPost("/createusers", verifytoken.verifyAdminToken)
   async createllUsers(req: Request, res: Response): Promise<any> {
-    res.set("Content-Type", "application/json");
-    let userdata: UserInter = req.body;
-    userdata.password = await bcrypt.hash(userdata.password, 10);
-    console.log(userdata.password);
-    const data = await user.createuser(userdata);
-    return { data };
+    try {
+      res.set("Content-Type", "application/json");
+      let userdata: UserInter = req.body;
+      userdata.password = await bcrypt.hash(userdata.password, 10);
+      console.log(userdata.password);
+      const data = await user.createuser(userdata);
+      res.status(CustomeStatus.success).json(data);
+    } catch (error: any) {
+      res
+        .status(CustomeStatus.BadRequest)
+        .json({ message: error.message, status: false });
+    }
   }
   @httpPut("/updateusers/:id", verifytoken.verifyAdminToken)
   async updateusers(req: Request, res: Response): Promise<any> {
@@ -38,9 +45,9 @@ export class Usercontroller {
       userdata.password = await bcrypt.hash(userdata.password, 10);
       console.log(userdata.password);
       const data = await user.updateuser(id, userdata);
-      return { data };
+      res.status(CustomeStatus.success).json(data);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
   @httpGet("/getusers", verifytoken.verifyAdminToken)
@@ -50,9 +57,9 @@ export class Usercontroller {
       // res.setHeader("Content-Type", "application/json");
       res.set("Content-Type", "application/json");
       const data = await user.getalluser();
-      return { data };
+      res.status(CustomeStatus.success).json(data);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
   @httpDelete("/deleteusers/:id", verifytoken.verifyAdminToken)
@@ -61,9 +68,9 @@ export class Usercontroller {
       res.set("Content-Type", "application/json");
       const id: any = req.params.id;
       const data = await user.deleteuser(id);
-      return { data };
+      res.status(CustomeStatus.success).json(data);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
   @httpPost("/loginusers")
@@ -72,6 +79,7 @@ export class Usercontroller {
       res.set("Content-Type", "application/json");
       let userdata: UserInter = req.body;
       const data = await user.loginuser(userdata);
+
       console.log(data);
       if (data) {
         const AdminToken = jwt.sign(
@@ -82,19 +90,20 @@ export class Usercontroller {
           }
         );
         res.cookie("AdminToken", AdminToken);
-        res.json({
+        res.status(CustomeStatus.success).status(CustomeStatus.success).json({
           message: LoginSuccess.loginSuccess,
-          status: true,
+
           token: AdminToken,
         });
       } else {
-        res.json({
+        res.status(CustomeStatus.BadRequest).json({
           message: LoginError.LoginFailed,
+          data: data,
           status: false,
         });
       }
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
   @httpPost("/logoutusers")
@@ -107,10 +116,12 @@ export class Usercontroller {
           res.clearCookie(cookie);
         });
 
-        res.status(400).json({ message: "Logout Successful", status: true });
+        res
+          .status(CustomeStatus.success)
+          .json({ message: LoginSuccess.logoutsuccess, status: true });
       } else {
         return res
-          .status(400)
+          .status(CustomeStatus.BadRequest)
           .json({ message: "User Already Logout", status: false });
       }
     } catch (error) {

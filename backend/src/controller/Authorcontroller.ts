@@ -12,6 +12,7 @@ import { AdminToken } from "../middlware/verifytokenMiddlware";
 import author, { AuthorInterface } from "../models/author";
 import { AuthorInter } from "../interfaces/authorinterface";
 import { AuthorService } from "../services/authorservice";
+import { CustomeStatus } from "../error/customestatuscode";
 const user = new AdminToken();
 const authorservice = new AuthorService();
 
@@ -26,9 +27,9 @@ export class Authorcontroller {
       const data: AuthorInter = req.body;
       const authordata = await authorservice.createauthor(data);
 
-      res.json(data);
+      res.status(CustomeStatus.success).json(authordata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
   @httpGet("/getauthor", user.verifyAdminToken)
@@ -37,9 +38,9 @@ export class Authorcontroller {
       res.set("Content-Type", "application/json");
       const data: any = req.query.pageno;
       const authordata = await authorservice.getauthor(data);
-      res.json(authordata);
+      res.status(CustomeStatus.success).json(authordata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
   @httpPut("/updateauthor/:id", user.verifyAdminToken)
@@ -49,9 +50,9 @@ export class Authorcontroller {
       const id: any = req.params.id;
       const data: AuthorInter = req.body;
       const authordata = await authorservice.updateauthor(id, data);
-      res.json(authordata);
+      res.status(CustomeStatus.success).json(authordata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
   @httpDelete("/deleteauthor/:id", user.verifyAdminToken)
@@ -60,9 +61,9 @@ export class Authorcontroller {
       res.set("Content-Type", "application/json");
       const id: any = req.params.id;
       const authordata = await authorservice.deleteauthor(id);
-      res.json(authordata);
+      res.status(CustomeStatus.success).json(authordata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
 }

@@ -11,6 +11,7 @@ import { inject } from "inversify";
 import { Request, Response } from "express";
 import { Categoryservices } from "../services/categoryservice";
 import { AdminToken } from "../middlware/verifytokenMiddlware";
+import { CustomeStatus } from "../error/customestatuscode";
 const user = new AdminToken();
 const category = new Categoryservices();
 @controller("/category")
@@ -25,9 +26,9 @@ export class CategoryController {
       res.set("Content-Type", "application/json");
       const data = req.body;
       const categorydata = await category.createcategory(data);
-      res.status(200).json(categorydata);
+      res.status(CustomeStatus.success).json(categorydata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
   @httpGet("/getcategory", user.verifyAdminToken)
@@ -36,9 +37,9 @@ export class CategoryController {
       res.set("Content-Type", "application/json");
       const pageno = req.query.pageno;
       const categorydata = await category.getcategory(pageno);
-      res.status(200).json(categorydata);
+      res.status(CustomeStatus.success).json(categorydata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
   @httpPut("/updatecategory/:id", user.verifyAdminToken)
@@ -48,9 +49,9 @@ export class CategoryController {
       const id = req.params.id;
       const data = req.body;
       const categorydata = await category.updatecategory(id, data);
-      res.status(200).json(categorydata);
+      res.status(CustomeStatus.success).json(categorydata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
   @httpDelete("/deletecategory/:id", user.verifyAdminToken)
@@ -59,9 +60,9 @@ export class CategoryController {
       res.set("Content-Type", "application/json");
       const id = req.params.id;
       const categorydata = await category.deletecategory(id);
-      res.status(200).json(categorydata);
+      res.status(CustomeStatus.success).json(categorydata);
     } catch (error: any) {
-      res.json(error.message);
+      res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
 }
