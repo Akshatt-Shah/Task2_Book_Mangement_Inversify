@@ -50,7 +50,7 @@ export class BookService {
     maxprice?: any
   ): Promise<any> {
     try {
-      console.log(minprice);
+      // console.log(minprice);
       const regex = new RegExp(search, "i"); // 'i' makes the search case-insensitive
       let matchObject: any = {};
       const limit = 5;
