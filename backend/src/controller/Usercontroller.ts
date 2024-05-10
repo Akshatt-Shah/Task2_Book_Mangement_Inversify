@@ -23,6 +23,7 @@ export class Usercontroller {
 
   @httpPost("/createusers", verifytoken.verifyAdminToken)
   async createllUsers(req: Request, res: Response): Promise<any> {
+    res.set("Content-Type", "application/json");
     let userdata: UserInter = req.body;
     userdata.password = await bcrypt.hash(userdata.password, 10);
     console.log(userdata.password);
@@ -45,6 +46,9 @@ export class Usercontroller {
   @httpGet("/getusers", verifytoken.verifyAdminToken)
   async getallUsers(req: Request, res: Response): Promise<any> {
     try {
+      // console.log(first)
+      // res.setHeader("Content-Type", "application/json");
+      res.set("Content-Type", "application/json");
       const data = await user.getalluser();
       return { data };
     } catch (error: any) {
@@ -54,6 +58,7 @@ export class Usercontroller {
   @httpDelete("/deleteusers/:id", verifytoken.verifyAdminToken)
   async deleteUsers(req: Request, res: Response): Promise<any> {
     try {
+      res.set("Content-Type", "application/json");
       const id: any = req.params.id;
       const data = await user.deleteuser(id);
       return { data };
@@ -64,6 +69,7 @@ export class Usercontroller {
   @httpPost("/loginusers")
   async loginUsers(req: Request, res: Response): Promise<any> {
     try {
+      res.set("Content-Type", "application/json");
       let userdata: UserInter = req.body;
       const data = await user.loginuser(userdata);
       console.log(data);
@@ -94,6 +100,7 @@ export class Usercontroller {
   @httpPost("/logoutusers")
   async logoutuser(req: Request, res: Response) {
     try {
+      res.set("Content-Type", "application/json");
       const token = Object.keys(req.cookies);
       if (token.length > 0) {
         token.forEach((cookie) => {

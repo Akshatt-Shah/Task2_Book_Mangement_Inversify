@@ -22,6 +22,7 @@ export class Bookcontroller {
   @httpPost("/createbook", user.verifyAdminToken)
   async createbook(req: Request, res: Response) {
     try {
+      res.set("Content-Type", "application/json");
       const data: BookrInter = req.body;
       const authordata = await bookService.createbook(data);
 
@@ -34,6 +35,7 @@ export class Bookcontroller {
   @httpGet("/getbook", user.verifyAdminToken)
   async getcategory(req: Request, res: Response) {
     try {
+      res.set("Content-Type", "application/json");
       const pageno = req.query.pageno;
       const categorydata = await bookService.getbooks(pageno);
       res.status(200).json(categorydata);
@@ -45,6 +47,7 @@ export class Bookcontroller {
   @httpPut("/updatebook/:id", user.verifyAdminToken)
   async updatecategory(req: Request, res: Response) {
     try {
+      res.set("Content-Type", "application/json");
       const id = req.params.id;
       const data = req.body;
       const categorydata = await bookService.updatebook(id, data);
@@ -57,6 +60,7 @@ export class Bookcontroller {
   @httpDelete("/deletebook/:id", user.verifyAdminToken)
   async deletebook(req: Request, res: Response) {
     try {
+      res.set("Content-Type", "application/json");
       const id = req.params.id;
       const categorydata = await bookService.deletebook(id);
       res.status(200).json(categorydata);
@@ -67,6 +71,7 @@ export class Bookcontroller {
   @httpGet("/searchbook", user.verifyAdminToken)
   async searchbook(req: Request, res: Response) {
     try {
+      res.set("Content-Type", "application/json");
       let { search, pageno }: any = req.query;
       if (!pageno && pageno === null) {
         pageno = 1;
@@ -80,6 +85,7 @@ export class Bookcontroller {
   @httpGet("/dynamicsearchbook", user.verifyAdminToken)
   async dynamicsearchbook(req: Request, res: Response) {
     try {
+      res.set("Content-Type", "application/json");
       const search = req.query.search;
       const categorydata = await bookService.dynamicsearchbook(search);
       res.status(200).json(categorydata);

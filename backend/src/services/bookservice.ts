@@ -55,12 +55,6 @@ export class BookService {
       const regex = new RegExp(search, "i"); // 'i' makes the search case-insensitive
       const data = await Bookdetail.aggregate([
         {
-          $skip: skip - 1,
-        },
-        {
-          $limit: limit,
-        },
-        {
           $sort: {
             price: 1,
           },
@@ -90,6 +84,12 @@ export class BookService {
               { "categoryInfo.name": regex },
             ],
           },
+        },
+        {
+          $skip: skip - 1,
+        },
+        {
+          $limit: limit,
         },
         {
           $project: {
