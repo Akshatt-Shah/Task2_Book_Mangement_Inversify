@@ -1,4 +1,5 @@
 import "reflect-metadata";
+
 import {
   controller,
   httpDelete,
@@ -72,11 +73,19 @@ export class Bookcontroller {
   async searchbook(req: Request, res: Response) {
     try {
       res.set("Content-Type", "application/json");
-      let { search, pageno }: any = req.query;
+      let { search, pageno, category, author, minprice, maxprice }: any =
+        req.query;
       if (!pageno && pageno === null) {
         pageno = 1;
       }
-      const categorydata = await bookService.searchbook(search, pageno);
+      const categorydata = await bookService.searchbook(
+        search,
+        pageno,
+        category,
+        author,
+        minprice,
+        maxprice
+      );
       res.status(200).json(categorydata);
     } catch (error: any) {
       res.json(error.message);

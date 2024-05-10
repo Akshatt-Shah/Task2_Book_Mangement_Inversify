@@ -41,8 +41,18 @@ export class BookService {
       return { message: BookError.deleteBookError, status: false };
     }
   }
-  async searchbook(search?: any, pageno: any = 1): Promise<any> {
+  async searchbook(
+    search?: any,
+    pageno: any = 1,
+    category?: any,
+    author?: any,
+    minprice?: any,
+    maxprice?: any
+  ): Promise<any> {
     try {
+      console.log(minprice);
+      const regex = new RegExp(search, "i"); // 'i' makes the search case-insensitive
+      let matchObject: any = {};
       const limit = 5;
       if (!pageno && pageno === 0) {
         pageno = 1;
@@ -51,8 +61,41 @@ export class BookService {
       if (skip === 0) {
         skip = 1;
       }
+      if (category) {
+        if (typeof category === "string") {
+          matchObject["categoryInfo.name"] = category.toLowerCase();
+        }
+      }
+      if (search) {
+        matchObject = {
+          $or: [
+            { title: regex },
+            { description: regex },
+            { "authorInfo.name": regex },
+            { "categoryInfo.name": regex },
+          ],
+        };
+      }
+      if (author) {
+        if (typeof author === "string") {
+          matchObject["authorInfo.name"] = {
+            $regex: author,
+            $options: "i",
+          };
+        }
+      }
+      if (minprice) {
+        matchObject["price"] = { $gte: Number(minprice) };
+      }
 
-      const regex = new RegExp(search, "i"); // 'i' makes the search case-insensitive
+      if (maxprice) {
+        matchObject["price"] = {
+          ...matchObject["price"],
+          $lte: Number(maxprice),
+        };
+      }
+      console.log(matchObject);
+
       const data = await Bookdetail.aggregate([
         {
           $sort: {
@@ -76,14 +119,15 @@ export class BookService {
           },
         },
         {
-          $match: {
-            $or: [
-              { title: regex },
-              { description: regex },
-              { "authorInfo.name": regex },
-              { "categoryInfo.name": regex },
-            ],
-          },
+          // $match: {
+          //   $or: [
+          //     { title: regex },
+          //     { description: regex },
+          //     { "authorInfo.name": regex },
+          //     { "categoryInfo.name": regex },
+          //   ],
+          // },
+          $match: matchObject,
         },
         {
           $skip: skip - 1,
