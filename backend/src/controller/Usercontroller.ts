@@ -16,13 +16,19 @@ import { UserInter } from "../interfaces/userinterface";
 import { AdminToken } from "../middlware/verifytokenMiddlware";
 import { LoginError, LoginSuccess } from "../error/customeerror";
 import { CustomeStatus } from "../error/customestatuscode";
+import { UserValidation } from "../middlware/UserValidation";
+const validation = new UserValidation();
 const verifytoken = new AdminToken();
 const user = new UserServices();
 @controller("/users")
 export class Usercontroller {
   constructor(@inject("UserServices") private UserService: UserServices) {}
 
-  @httpPost("/createusers", verifytoken.verifyAdminToken)
+  @httpPost(
+    "/createusers",
+    verifytoken.verifyAdminToken,
+    validation.validateUser
+  )
   async createllUsers(req: Request, res: Response): Promise<any> {
     try {
       res.set("Content-Type", "application/json");
@@ -37,7 +43,11 @@ export class Usercontroller {
         .json({ message: error.message, status: false });
     }
   }
-  @httpPut("/updateusers/:id", verifytoken.verifyAdminToken)
+  @httpPut(
+    "/updateusers/:id",
+    verifytoken.verifyAdminToken,
+    validation.validateUser
+  )
   async updateusers(req: Request, res: Response): Promise<any> {
     try {
       const id: any = req.params.id;

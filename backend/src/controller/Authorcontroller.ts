@@ -13,6 +13,9 @@ import author, { AuthorInterface } from "../models/author";
 import { AuthorInter } from "../interfaces/authorinterface";
 import { AuthorService } from "../services/authorservice";
 import { CustomeStatus } from "../error/customestatuscode";
+import { UserValidation } from "../middlware/UserValidation";
+const AuthorValidation = new UserValidation();
+
 const user = new AdminToken();
 const authorservice = new AuthorService();
 
@@ -20,7 +23,11 @@ const authorservice = new AuthorService();
 export class Authorcontroller {
   constructor(@inject("AuthorService") private AuthorService: AuthorService) {}
 
-  @httpPost("/createauthor", user.verifyAdminToken)
+  @httpPost(
+    "/createauthor",
+    user.verifyAdminToken,
+    AuthorValidation.validateAuthor
+  )
   async createauthors(req: Request, res: Response) {
     try {
       res.set("Content-Type", "application/json");
@@ -43,7 +50,11 @@ export class Authorcontroller {
       res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
-  @httpPut("/updateauthor/:id", user.verifyAdminToken)
+  @httpPut(
+    "/updateauthor/:id",
+    user.verifyAdminToken,
+    AuthorValidation.validateAuthor
+  )
   async updateauthors(req: Request, res: Response) {
     try {
       res.set("Content-Type", "application/json");

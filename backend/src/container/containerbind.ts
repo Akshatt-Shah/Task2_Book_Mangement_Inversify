@@ -7,8 +7,10 @@ import { Categoryservices } from "../services/categoryservice";
 import { CategoryController } from "../controller/Categorycontroller";
 import { BookService } from "../services/bookservice";
 import { Bookcontroller } from "../controller/Bookcontroller";
+import { UserValidation } from "../middlware/UserValidation";
 
 const container = new Container();
+container.bind<UserValidation>("UserValidation").to(UserValidation);
 container.bind<UserServices>("UserServices").to(UserServices);
 container.bind<Usercontroller>("Usercontroller").to(Usercontroller);
 container.bind<AuthorService>("AuthorService").to(AuthorService);
@@ -17,6 +19,5 @@ container.bind<Categoryservices>("Categoryservices").to(Categoryservices);
 container.bind<CategoryController>("CategoryController").to(CategoryController);
 container.bind<BookService>("BookService").to(BookService);
 container.bind<Bookcontroller>("Bookcontroller").to(Bookcontroller);
-
 
 export default container;
