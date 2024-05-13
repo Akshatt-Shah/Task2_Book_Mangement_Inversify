@@ -12,6 +12,8 @@ import { Request, Response } from "express";
 import { Categoryservices } from "../services/categoryservice";
 import { AdminToken } from "../middlware/verifytokenMiddlware";
 import { CustomeStatus } from "../error/customestatuscode";
+import { UserValidation } from "../middlware/UserValidation";
+const categoryvalidation = new UserValidation();
 const user = new AdminToken();
 const category = new Categoryservices();
 @controller("/category")
@@ -20,7 +22,11 @@ export class CategoryController {
     @inject("Categoryservices")
     private Categoryservices: Categoryservices
   ) {}
-  @httpPost("/createcategory", user.verifyAdminToken)
+  @httpPost(
+    "/createcategory",
+    user.verifyAdminToken,
+    categoryvalidation.validateCategory
+  )
   async createcategory(req: Request, res: Response) {
     try {
       res.set("Content-Type", "application/json");
@@ -42,7 +48,11 @@ export class CategoryController {
       res.status(CustomeStatus.BadRequest).json(error.message);
     }
   }
-  @httpPut("/updatecategory/:id", user.verifyAdminToken)
+  @httpPut(
+    "/updatecategory/:id",
+    user.verifyAdminToken,
+    categoryvalidation.validateCategory
+  )
   async updatecategory(req: Request, res: Response) {
     try {
       res.set("Content-Type", "application/json");

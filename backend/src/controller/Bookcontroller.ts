@@ -14,6 +14,8 @@ import Bookdetail, { BookrInterface } from "../models/books";
 import { BookrInter } from "../interfaces/bookinterface";
 import { BookService } from "../services/bookservice";
 import { CustomeStatus } from "../error/customestatuscode";
+import { UserValidation } from "../middlware/UserValidation";
+const BookValidation = new UserValidation();
 const user = new AdminToken();
 const bookService = new BookService();
 
@@ -21,7 +23,7 @@ const bookService = new BookService();
 export class Bookcontroller {
   constructor(@inject("BookService") private BookService: BookService) {}
 
-  @httpPost("/createbook", user.verifyAdminToken)
+  @httpPost("/createbook", user.verifyAdminToken, BookValidation.validateBook)
   async createbook(req: Request, res: Response) {
     try {
       res.set("Content-Type", "application/json");
@@ -46,7 +48,11 @@ export class Bookcontroller {
     }
   }
 
-  @httpPut("/updatebook/:id", user.verifyAdminToken)
+  @httpPut(
+    "/updatebook/:id",
+    user.verifyAdminToken,
+    BookValidation.validateBook
+  )
   async updatecategory(req: Request, res: Response) {
     try {
       res.set("Content-Type", "application/json");

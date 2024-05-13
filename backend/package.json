@@ -19,6 +19,7 @@
     "@types/nodemailer": "^6.4.15",
     "@types/nodemon": "^1.19.6",
     "@types/typescript": "^2.0.0",
+    "@types/yup": "^0.32.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
@@ -28,7 +29,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.4",
     "nodemailer": "^6.9.13",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "typescript": "^5.4.5"
